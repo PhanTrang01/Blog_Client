@@ -1,0 +1,24 @@
+.profileIcon {
+    border-radius: 50%;
+    border: 2px solid white;
+    // display: block;
+  
+    &:hover {
+      cursor: pointer;
+    }
+  
+    &.small {
+      width: 25px;
+      height: 25px;
+    }
+  
+    &.medium {
+      width: 35px;
+      height: 35px;
+    }
+  
+    &.big {
+      width: 60px;
+      height: 60px;
+    }
+  }
