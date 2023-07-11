@@ -37,7 +37,7 @@ function Single() {
             <img src={post.userImg} alt="" />
             <div className="info">
               <span>{post.username}</span>
-              <p>Posted {moment(post.date).fromNow()}</p>
+              <p>Posted {moment(post.CreateAt).fromNow()}</p>
             </div>
             <div className="edit">
               <Link to={`/write?edit2`}>
@@ -49,7 +49,7 @@ function Single() {
           <h1>{post.title}</h1>
           <p>{post.desc}</p>
         </div>
-        <Posts />
+        <Posts postExcept={postId} />
       </div>
       <Footer />
     </div>

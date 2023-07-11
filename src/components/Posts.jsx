@@ -1,47 +1,42 @@
-import React from 'react';
-import '../style.scss';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import "../style.scss";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
-export const posts = [
-  {
-    id: 1,
-    title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
-    desc: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!',
-    img: 'https://images.pexels.com/photos/7008010/pexels-photo-7008010.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-  },
-  {
-    id: 2,
-    title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
-    desc: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!',
-    img: 'https://images.pexels.com/photos/6489663/pexels-photo-6489663.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-  },
-  {
-    id: 3,
-    title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
-    desc: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!',
-    img: 'https://images.pexels.com/photos/4230630/pexels-photo-4230630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-  },
-  {
-    id: 4,
-    title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit',
-    desc: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. A possimus excepturi aliquid nihil cumque ipsam facere aperiam at! Ea dolorem ratione sit debitis deserunt repellendus numquam ab vel perspiciatis corporis!',
-    img: 'https://images.pexels.com/photos/6157049/pexels-photo-6157049.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-  },
-];
+function Posts({ postExcept }) {
+  const [posts, setPosts] = useState([]);
 
-function Posts() {
+  useEffect(() => {
+    callApi()
+      // .then((res) => setResponse(res.express))
+      .catch((err) => console.log(err));
+  }, []);
+  const callApi = async () => {
+    const response = await axios.get(`/post`);
+    // const body = await response.json();
+    setPosts(response.data);
+    if (response.status !== 200) throw new Error(response.message);
+    return;
+  };
+
   return (
-    <div className='posts'>
+    <div className="posts">
       <h1>Other posts you may like</h1>
-      {posts.map((post) => (
-        <div className='post' key={post.id}>
-          <img src={post.img} alt='' />
-          <h2>{post.title}</h2>
-          <button>
-            <Link to={`/post/${post.id}`}> Read Mode </Link>
-          </button>
-        </div>
-      ))}
+      {posts.map((post) => {
+        if (Number(post.id) !== Number(postExcept)) {
+          return (
+            <div className="post" key={post.id}>
+              <img src={post.img} alt="" />
+              <h2>{post.title}</h2>
+              <button>
+                <Link to={`/post/${post.id}`}> Read Mode</Link>
+              </button>
+            </div>
+          );
+        } else {
+          return null; // or any other fallback logic if needed
+        }
+      })}
     </div>
   );
 }
