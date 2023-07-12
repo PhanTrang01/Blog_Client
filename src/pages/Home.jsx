@@ -40,7 +40,9 @@ function Home() {
                 {post.desc.split(" ").slice(0, 50).join(" ")}
                 {post.desc.split(" ").length > 50 ? " . . ." : ""}
               </p>
-              <button> Read More</button>
+              <button>
+                <Link to={`/post/${post.id}`}>Read More</Link>
+              </button>
             </div>
           </div>
         ))}

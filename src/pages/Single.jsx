@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Posts from "../components/Posts";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import editIcon from "../images/edit-icon.svg";
 import deleteIcon from "../images/delete-icon.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
+import { AuthContext } from "../context/authContext";
 
 function Single() {
   const [post, setPost] = useState({});
+  const { currentUser } = useContext(AuthContext);
 
+  const navigate = useNavigate();
   const location = useLocation();
   const postId = location.pathname.split("/")[2];
 
@@ -27,6 +30,15 @@ function Single() {
     fetchData();
   }, [postId]);
 
+  const HandleDelete = async () => {
+    try {
+      await axios.delete(`/post/${postId}`);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -39,12 +51,14 @@ function Single() {
               <span>{post.username}</span>
               <p>Posted {moment(post.CreateAt).fromNow()}</p>
             </div>
-            <div className="edit">
-              <Link to={`/write?edit2`}>
-                <img src={editIcon} alt="" />
-              </Link>
-              <img src={deleteIcon} alt="" />
-            </div>
+            {currentUser.username === post.username && (
+              <div className="edit">
+                <Link to={`/write?edit2`}>
+                  <img src={editIcon} alt="" />
+                </Link>
+                <img src={deleteIcon} onClick={HandleDelete} alt="" />
+              </div>
+            )}
           </div>
           <h1>{post.title}</h1>
           <p>{post.desc}</p>
