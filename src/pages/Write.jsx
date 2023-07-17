@@ -9,25 +9,30 @@ import axios from "axios";
 import moment from "moment";
 
 export default function Write() {
-  const state = useLocation();
+  const state = useLocation().state;
   const navigate = useNavigate();
 
-  console.log(state);
-
-  const [value, setValue] = useState("");
-  const [title, setTitle] = useState("");
+  const [value, setValue] = useState(state?.desc || "");
+  const [title, setTitle] = useState(state?.title || "");
   const [file, setFile] = useState(null);
-  const [cat, setCat] = useState("");
+  const [cat, setCat] = useState(state?.category || "");
 
-  const stripTags = (content) => {
-    const div = document.createElement("div");
-    div.innerHTML = content;
-    return div.textContent || div.innerText || "";
+  const upload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post("/upload", formData);
+      console.log(res.data);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // const imgUrl = await upload();
+    upload();
     try {
       await axios.post(`/post`, {
         title,
@@ -49,14 +54,15 @@ export default function Write() {
         <div className="content">
           <input
             placeholder="Title"
+            value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <div className="editorContainer">
             <ReactQuill
               className="editor"
               theme="snow"
-              // value={value}
-              onChange={(content) => setValue(stripTags(content))}
+              value={value}
+              onChange={(content) => setValue(content)}
             />
           </div>
         </div>
@@ -75,6 +81,7 @@ export default function Write() {
               id="file"
               name=""
               accept="image/png, image/gif, image/jpeg"
+              onChange={(e) => setFile(e.target.files[0])}
             />
             <label className="file" htmlFor="file">
               Upload Image
@@ -89,9 +96,9 @@ export default function Write() {
             <div className="cat">
               <input
                 type="radio"
-                checked={cat === "art"}
+                checked={cat === "ART"}
                 name="cat"
-                value="art"
+                value="ART"
                 id="art"
                 onChange={(e) => setCat(e.target.value)}
               />
@@ -100,9 +107,9 @@ export default function Write() {
             <div className="cat">
               <input
                 type="radio"
-                checked={cat === "science"}
+                checked={cat === "SCIENCE"}
                 name="cat"
-                value="science"
+                value="SCIENCE"
                 id="science"
                 onChange={(e) => setCat(e.target.value)}
               />
@@ -111,9 +118,9 @@ export default function Write() {
             <div className="cat">
               <input
                 type="radio"
-                checked={cat === "technology"}
+                checked={cat === "TECHNOLOGY"}
                 name="cat"
-                value="technology"
+                value="TECHNOLOGY"
                 id="technology"
                 onChange={(e) => setCat(e.target.value)}
               />
@@ -122,9 +129,9 @@ export default function Write() {
             <div className="cat">
               <input
                 type="radio"
-                checked={cat === "cinema"}
+                checked={cat === "CINEMA"}
                 name="cat"
-                value="cinema"
+                value="CINEMA"
                 id="cinema"
                 onChange={(e) => setCat(e.target.value)}
               />
@@ -133,9 +140,9 @@ export default function Write() {
             <div className="cat">
               <input
                 type="radio"
-                checked={cat === "design"}
+                checked={cat === "DESIGN"}
                 name="cat"
-                value="design"
+                value="DESIGN"
                 id="design"
                 onChange={(e) => setCat(e.target.value)}
               />
@@ -144,9 +151,9 @@ export default function Write() {
             <div className="cat">
               <input
                 type="radio"
-                checked={cat === "food"}
+                checked={cat === "FOOD"}
                 name="cat"
-                value="food"
+                value="FOOD"
                 id="food"
                 onChange={(e) => setCat(e.target.value)}
               />

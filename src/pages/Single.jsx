@@ -7,6 +7,7 @@ import deleteIcon from "../images/delete-icon.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
+import parse from "html-react-parser";
 import { AuthContext } from "../context/authContext";
 
 function Single() {
@@ -53,7 +54,7 @@ function Single() {
             </div>
             {currentUser.username === post.username && (
               <div className="edit">
-                <Link to={`/write?edit2`}>
+                <Link to={`/write?edit2`} state={post}>
                   <img src={editIcon} alt="" />
                 </Link>
                 <img src={deleteIcon} onClick={HandleDelete} alt="" />
@@ -61,7 +62,7 @@ function Single() {
             )}
           </div>
           <h1>{post.title}</h1>
-          <p>{post.desc}</p>
+          <p>{parse(`${post.desc}`)}</p>
         </div>
         <Posts postExcept={postId} />
       </div>

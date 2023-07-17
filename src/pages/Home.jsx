@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link, useLocation } from "react-router-dom";
 import "../style.scss";
+import parse from "html-react-parser";
 import axios from "axios";
 
 function Home() {
@@ -10,18 +11,17 @@ function Home() {
   const cat = useLocation().search;
 
   useEffect(() => {
+    const callApi = async () => {
+      const response = await axios.get(`/post${cat}`);
+      // const body = await response.json();
+      setPosts(response.data);
+      if (response.status !== 200) throw new Error(response.message);
+      return;
+    };
     callApi()
       // .then((res) => setResponse(res.express))
       .catch((err) => console.log(err));
   }, [cat]);
-
-  const callApi = async () => {
-    const response = await axios.get(`/post${cat}`);
-    // const body = await response.json();
-    setPosts(response.data);
-    if (response.status !== 200) throw new Error(response.message);
-    return;
-  };
 
   return (
     <div className="home">
@@ -36,10 +36,7 @@ function Home() {
               <Link className="link" to={`/post/${post.id}`}>
                 <h1>{post.title}</h1>
               </Link>
-              <p>
-                {post.desc.split(" ").slice(0, 50).join(" ")}
-                {post.desc.split(" ").length > 50 ? " . . ." : ""}
-              </p>
+              <p>{parse(`${post.desc.split(" ").slice(0, 50).join(" ")}`)}</p>
               <button>
                 <Link to={`/post/${post.id}`}>Read More</Link>
               </button>
